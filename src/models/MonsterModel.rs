@@ -1,0 +1,35 @@
+#[derive(serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Monster {
+    pub id: char[16],
+    #[serde(alias = "id")]
+    pub monster_id: i16,
+    #[serde(alias="monster_name")]
+    pub name: String,
+    pub meta: String,
+    pub armor_class: String,
+    pub hit_points: String,
+    pub speed: String,
+    pub strength: String,
+    pub str_mod: String,
+    pub dexterity: String,
+    pub dex_mod: String,
+    pub constitution: String,
+    pub con_mod: String,
+    pub intellegence: String,
+    pub int_mod: String,
+    pub wisdom: String,
+    pub wis_mod: String,
+    pub charisma: String,
+    pub cha_mod: String,
+    pub saving_throw: String,
+    pub skills: String,
+    pub immune: String,
+    pub senses: String,
+    pub languages: String,
+    pub challenge: String,
+    pub traits: String,
+    pub actions: String,
+    pub legendary: String,
+    pub img_url: String,
+}
