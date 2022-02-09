@@ -21,7 +21,7 @@ In the end I will be trying to implement battles and homebrew, so be sure to fol
 3. Deployment on aws.
 4. Create a Monster Homebrew service.
 5. Create a Battle Service.
-6. Implemnt Leveling.js
+6. Implement leveling and an indepth interface for creating parties.
 7. Create more a more in depth Party service.
 
 ## Thank you!
