@@ -24,7 +24,7 @@ async fn parties(db: Data<PartyRepo>)
     let data = db.all().await;
     match data {
         Ok(value) => {
-            response.data = data;
+            response.data = value.unwrap();
             response.success = true;
             response.message = value.unwrap();
         }
