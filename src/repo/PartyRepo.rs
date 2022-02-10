@@ -36,8 +36,8 @@ impl PartyRepo {
     pub async fn post(&self, create_party: PartyEntity) -> Result<PartyEntity, StdErr> {
         let party = sqlx::query("INSERT INTO partys (id, party_name)\
                                     VALUES ($1, $2)")
-            .bind(create_party.id)
-            .bind(create_party.name)
+            .bind(create_party.party_id)
+            .bind(create_party.party_name)
             .fetch_one(&self.pool)
             .await?;
         Ok(party) 
