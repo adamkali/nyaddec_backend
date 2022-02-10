@@ -29,9 +29,13 @@ In the end I will be trying to implement battles and homebrew, so be sure to fol
 ## Thank you!
 
 Thank you to [Rust Examples](https://doc.rust-lang.org/rust-by-example/) for all of the examples I needed when writing this. 
+
 Thank you to [Rust Docs](https://docs.rs/) for all the documentation needed for this project.
+
 Thank you to [Sierra Larosa](https://github.com/sierralarosa) for her help on the frontend and being the perfect fiance and all her support throughout my time.
+
 Thank you to [pretzelhammer](https://github.com/pretzelhammer) for the excellent guide for asynchronus rust web developement.
+
 Thank you to [eFileMadeEasy](https://www.efilemadeeasy.com/) for my employement allowing me more time to spend on the things I love.
 
 *And especially*

@@ -1,12 +1,23 @@
 use sqlx::{Connection, MySqlConnection, Pool, MySql, mysql::MySqlPoolOptions};
-use crate::libs;
+use crate::common::Freq;
 use crate::models::PartyModel;
+use crate::StdErr;
 
+#[derive(Clone)]
 pub struct PartyRepo {
     pool: Pool<MySql>
 }
 
 impl PartyRepo {
+
+    pub async fn connect() -> Result<Self, StdErr> {
+        let conn = std::env::var("DATABASE_URL")?;
+        let pool = MySqlPoolOptions::new()
+            .connect(&conn)
+            .await?;
+        Ok( PartyRepo { pool } )
+    }
+
     pub async fn all(&self) -> Result<Vec<PartyModel>, StdErr> {
         let parties = sqlx::query_as("SELECT * FROM partys")
             .fetch_all(&self.pool)
@@ -14,7 +25,7 @@ impl PartyRepo {
         Ok(parties)
     }
 
-    pub async fn get(&self, party_id: char[16]) -> Result<PartyModel, StdErr> {
+    pub async fn get(&self, party_id: &str) -> Result<PartyModel, StdErr> {
         let party = sqlx::query_as("SELECT * FROM partys WHERE id = $1")
             .bind(party_id)
             .fetch_all(&self.pool)
@@ -32,11 +43,13 @@ impl PartyRepo {
         Ok(party) 
     }
 
-    pub async fn delete(&self, party_id: char[16]) -> Result<PartyModel, StdErr> {
-        let party = sqlx::query_as("DELETE FROM partys WHERE id = $1")
+    pub async fn delete(&self, party_id: &str) 
+        -> Result<(), StdErr> 
+    {
+        sqlx::query("DELETE FROM partys WHERE id = $1")
             .bind(party_id)
             .execute(&self.pool)
             .await?;
-        Ok(party);
+        Ok(())
     }
 }
