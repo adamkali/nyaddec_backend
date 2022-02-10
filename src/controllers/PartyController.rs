@@ -1,5 +1,5 @@
 use crate::common::DetailedResponse::DetailedResponse;
-use crate::models::PartyModel::PartyModel;
+use crate::models::PartyModel::PartyEntity;
 use crate::StdErr;
 use crate::repo::PartyRepo::PartyRepo;
 use actix_web::web::{Data, Json, Path};
@@ -15,11 +15,11 @@ fn to_ok(_: ()) -> HttpResponse {
 #[actix_web::get("/party")]
 async fn parties(db: Data<PartyRepo>) 
     -> Result<
-        Json<DetailedResponse<Vec<PartyModel>>>,
+        Json<DetailedResponse<Vec<PartyEntity>>>,
         InternalError<StdErr>
     >
 {
-    let response: DetailedResponse<Vec<PartyModel>> = DetailedResponse::new();
+    let response: DetailedResponse<Vec<PartyEntity>> = DetailedResponse::new();
     
     let data = db.all().await;
     match data {

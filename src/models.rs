@@ -1,1 +1,1 @@
-pub mod PartyEntity;
+pub mod PartyModel;

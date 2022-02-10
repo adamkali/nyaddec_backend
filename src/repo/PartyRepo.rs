@@ -1,6 +1,6 @@
 use sqlx::{Connection, MySqlConnection, Pool, MySql, mysql::MySqlPoolOptions};
 use crate::common::Freq;
-use crate::models::PartyModel;
+use crate::models::PartyModel::PartyEntity;
 use crate::StdErr;
 
 #[derive(Clone)]
@@ -18,14 +18,14 @@ impl PartyRepo {
         Ok( PartyRepo { pool } )
     }
 
-    pub async fn all(&self) -> Result<Vec<PartyModel>, StdErr> {
-        let parties = sqlx::query_as("SELECT * FROM partys")
+    pub async fn all(&self) -> Result<Vec<PartyEntity>, StdErr> {
+        let parties = sqlx::query("SELECT * FROM partys")
             .fetch_all(&self.pool)
             .await?;
         Ok(parties)
     }
 
-    pub async fn get(&self, party_id: &str) -> Result<PartyModel, StdErr> {
+    pub async fn get(&self, party_id: &str) -> Result<PartyEntity, StdErr> {
         let party = sqlx::query_as("SELECT * FROM partys WHERE id = $1")
             .bind(party_id)
             .fetch_all(&self.pool)
@@ -33,8 +33,8 @@ impl PartyRepo {
         Ok(party)
     }
 
-    pub async fn post(&self, create_party: PartyModel) -> Result<PartyModel, StdErr> {
-        let party = sqlx::query_as("INSERT INTO partys (id, party_name)\
+    pub async fn post(&self, create_party: PartyEntity) -> Result<PartyEntity, StdErr> {
+        let party = sqlx::query("INSERT INTO partys (id, party_name)\
                                     VALUES ($1, $2)")
             .bind(create_party.id)
             .bind(create_party.name)
