@@ -26,7 +26,7 @@ async fn parties(db: Data<PartyRepo>)
         Ok(value) => {
             response.data = data;
             response.success = true;
-            response.message = value;
+            response.message = value.unwrap();
         }
         Err(e) => {
             response.success = false;
