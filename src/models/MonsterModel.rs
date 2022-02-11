@@ -1,7 +1,7 @@
 #[derive(serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Monster {
-    pub id: char[16],
+    pub id: String,
     #[serde(alias = "id")]
     pub monster_id: i16,
     #[serde(alias="monster_name")]

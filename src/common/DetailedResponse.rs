@@ -1,6 +1,6 @@
 use serde;
 
-#[derive(serde::Deserialize)]
+#[derive(serde::Serialize)]
 pub struct DetailedResponse<T> {
     pub data: Option<T>,
     pub success: bool,
@@ -16,3 +16,5 @@ impl<T> DetailedResponse::<T> {
         }
     }
 }
+
+

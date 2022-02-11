@@ -1,8 +1,8 @@
 use sqlx::{Connection, MySqlConnection, Pool, MySql, mysql::MySqlPoolOptions};
 use crate::common::DetailedResponse::DetailedResponse;
-use crate::models::models::PartyEntity;
+use crate::models::PlayerCharacterModel::PlayerCharacterEntity;
 
-#[derive(Clone)]
+#[derive(Clone, sqlx::Decode)]
 pub struct PlayerCharacterRepo {
     pool: Pool<MySql>
 }

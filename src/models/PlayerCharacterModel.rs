@@ -1,7 +1,7 @@
-#[derive(serde::Serialize, serde::Deserialize)]
+#[derive(serde::Serialize, serde::Deserialize, sqlx::FromRow, sqlx::Type)]
 #[serde(rename_all = "camelCase")]
-pub struct PlayerCharacter {
-    pub id: char[16],
+pub struct PlayerCharacterEntity {
+    pub id: String,
     #[serde(alias = "playerID")]
     pub player_id: i16,
     #[serde(alias = "playerName")]

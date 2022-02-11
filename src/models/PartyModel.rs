@@ -1,10 +1,10 @@
-use super::PlayerCharacterModel::PlayerCharacter;
+use super::PlayerCharacterModel::PlayerCharacterEntity;
 
-#[derive(serde::Serialize, serde::Deserialize)]
+#[derive(serde::Serialize, serde::Deserialize, sqlx::FromRow)]
 #[serde(rename_all = "camelCase")]
 pub struct PartyEntity {
-    pub id: str,
+    pub id: String,
     #[serde(alias="party_name")]
     pub name: String,
-    pub characters: Vec<PlayerCharacter>,
+    pub characters: Vec<PlayerCharacterEntity>,
 }

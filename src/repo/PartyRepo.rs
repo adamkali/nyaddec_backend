@@ -1,5 +1,4 @@
-use sqlx::{Connection, MySqlConnection, Pool, MySql, mysql::MySqlPoolOptions};
-use crate::common::Freq;
+use sqlx::{Connection, Pool, MySql, mysql::MySqlPoolOptions};
 use crate::models::PartyModel::PartyEntity;
 use crate::StdErr;
 
@@ -28,7 +27,7 @@ impl PartyRepo {
     pub async fn get(&self, party_id: &str) -> Result<PartyEntity, StdErr> {
         let party = sqlx::query_as("SELECT * FROM partys WHERE id = $1")
             .bind(party_id)
-            .fetch_all(&self.pool)
+            .fetch_one(&self.pool)
             .await?;
         Ok(party)
     }
@@ -36,8 +35,8 @@ impl PartyRepo {
     pub async fn post(&self, create_party: PartyEntity) -> Result<PartyEntity, StdErr> {
         let party = sqlx::query("INSERT INTO partys (id, party_name)\
                                     VALUES ($1, $2)")
-            .bind(create_party.party_id)
-            .bind(create_party.party_name)
+            .bind(create_party.id)
+            .bind(create_party.name)
             .fetch_one(&self.pool)
             .await?;
         Ok(party) 
