@@ -22,7 +22,7 @@ impl PartyRepo {
         let parties = sqlx::query("SELECT * FROM partys")
             .fetch_all(&self.pool)
             .await?;
-        Ok(parties)
+        Ok(parties.unwrap())
     }
 
     pub async fn get(&self, party_id: &str) -> Result<PartyEntity, StdErr> {
