@@ -18,6 +18,7 @@ impl PartyRepo {
     }
 
     pub async fn all(&self) -> Result<Vec<PartyEntity>, StdErr> {
+        let mut result = Vec::new();
         let parties = sqlx::query("SELECT * FROM partys")
             .fetch_all(&self.pool)
             .await?;
