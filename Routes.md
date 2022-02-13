@@ -52,6 +52,8 @@ a 32bit string that the api will use to check if there is a party stored with th
 
 **returns**
 `DetailedResponse<PartyEntity>`
+
+*SUCESS*
 example:
 ```
 {
@@ -76,9 +78,92 @@ example:
                     party_id: '32bit string as Guid'
                 }
             ] 
-        }
-    ],
-    success: 'bool',
-    message: 'string'
+        },
+    success: true,
+    message: 'Successful api transaction response.'
 }
+```
+*ERROR*
+example
+```
+    data: null,
+    success: false,
+    message: 'Some error occurred.'
+```
+
+
+# `/api/party/post`
+
+**parameters**
+
+*route: PartyEntity*
+a PartyEntity object modeled in json format.
+
+example:
+```
+{
+    id: '32bit string as Guid',
+    party_name: 'string',
+    characters: [
+            {
+                id: '32bit string as Guid',
+                player_id: 'number',
+                player_name: 'string',
+                player_hitpoints: 'number',
+                player_level: 'number',
+                party_id: '32bit string as Guid'
+            },
+            {
+                id: '32bit string as Guid',
+                player_id: 'number',
+                player_name: 'string',
+                player_hitpoints: 'number',
+                player_level: 'number',
+                party_id: '32bit string as Guid'
+            }
+        ] 
+    }
+}
+```
+
+**returns**
+`DetailedResponse<PartyEntity>`
+
+*SUCCESS*
+example:
+```
+{
+    data: {
+        id: '32bit string as Guid',
+        party_name: 'string',
+        characters: [
+                {
+                    id: '32bit string as Guid',
+                    player_id: 'number',
+                    player_name: 'string',
+                    player_hitpoints: 'number',
+                    player_level: 'number',
+                    party_id: '32bit string as Guid'
+                },
+                {
+                    id: '32bit string as Guid',
+                    player_id: 'number',
+                    player_name: 'string',
+                    player_hitpoints: 'number',
+                    player_level: 'number',
+                    party_id: '32bit string as Guid'
+                }
+            ] 
+        },
+    success: true,
+    message: 'Succesfull api transaction response.'
+}
+```
+
+*ERROR*
+example
+```
+    data: null,
+    success: false,
+    message: 'Some error occurred.'
 ```
