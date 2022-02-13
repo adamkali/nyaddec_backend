@@ -1,3 +1,4 @@
+use crate::models::TokenModel::Token;
 use rand::Rng;
 use sqlx::{ Pool, MySql, mysql::MySqlPoolOptions};
 use crate::StdErr;
@@ -28,5 +29,21 @@ impl MySqlDB {
             .connect(&conn)
             .await?;
         Ok(MySqlDB { pool} )
+    }
+
+    pub async fn validate<T: AsRef<str>>
+    (
+        &self,
+        token_id: T,
+    ) -> Result<Token, StdErr> 
+    {
+        let token_id = token_id.as_ref();
+        let token = sqlx::query_as(
+            "SELECT * FROM tokens WHERE id = ? AND eapired > CURRENT_TIMESTAMP()"
+        )
+            .bind(token_id)
+            .fetch_one(&self.pool)
+            .await?;
+        Ok(token)
     }
 }

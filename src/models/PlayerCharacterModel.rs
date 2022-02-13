@@ -1,18 +1,33 @@
-use sqlx::{MySql, Decode, FromRow};
+use sqlx::{ Decode};
 
 
-#[derive(serde::Serialize, serde::Deserialize, Decode)]
+#[derive(serde::Serialize, serde::Deserialize, Decode, sqlx::Type, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct PlayerCharacterEntity {
     pub id: String,
     #[serde(alias = "playerID")]
-    pub player_id: i16,
+    pub player_id: i64,
     #[serde(alias = "playerName")]
     pub player_name: String,
     #[serde(alias = "playerHitpoints")]
-    pub player_hitpoints: i16,
+    pub player_hitpoints: i64,
     #[serde(alias = "playerLevel")]
-    pub player_level: i16,
+    pub player_level: i32,
+}
+
+#[derive(serde::Serialize, serde::Deserialize, Decode, sqlx::Type, sqlx::FromRow)]
+#[serde(rename_all = "camelCase")]
+pub struct PlayerCharacterEntityPost {
+    pub id: String,
+    #[serde(alias = "playerID")]
+    pub player_id: i64,
+    #[serde(alias = "playerName")]
+    pub player_name: String,
+    #[serde(alias = "playerHitpoints")]
+    pub player_hitpoints: i64,
+    #[serde(alias = "playerLevel")]
+    pub player_level: i32,
+    pub fk: String,
 }
 
 /*
