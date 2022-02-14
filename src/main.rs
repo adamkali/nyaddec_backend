@@ -28,7 +28,5 @@ async fn main() -> Result<(), StdErr> {
     .run()
     .await?;
 
-    handle.enter();
-
     Ok(())
 }
