@@ -1,40 +1,35 @@
+use crate::models::TokenModel;
+
+use std::future::Ready;
 use std::pin::Pin;
 
-use actix_web::{FromRequest};
-use actix_web::{HttpRequest};
+use actix_web::{FromRequest, HttpRequest};
 use actix_web::http::StatusCode;
 use actix_web::error::InternalError;
 use actix_web::dev::Payload;
-use actix_web::web::{Data};
-
 use futures::{future, Future, FutureExt};
 
-use crate::common::Freq::MySqlDB;
-
-// for authentication
-#[derive(sqlx::FromRow)]
-pub struct Token {
-    pub id: String,
-    pub expired: chrono::DateTime<chrono::Local>,
-}
+use crate::StdErr;
+use crate::db::Db;
+use crate::models::Token;
 
 impl FromRequest for Token {
     type Error = InternalError<&'static str>;
-    // type Config = ();
+    //type Config = ();
 
+    // we return a Future that is either
+    // - immediately ready (on a bad request with a missing or malformed Authorization header)
+    // - ready later (pending on a SQL query that validates the request's Bearer token)
     type Future = future::Either<
         future::Ready<Result<Self, Self::Error>>,
-        Pin<Box<dyn Future<
-            Output = Result<Self, Self::Error>> + 'static
-        >>,
+        Pin<Box<dyn Future<Output = Result<Self, Self::Error>> + 'static>>,
     >;
 
-    fn from_request(
-        req: &HttpRequest, _payload: &mut Payload
-    ) -> Self::Future 
-    {
+    fn from_request(req: &HttpRequest, _payload: &mut Payload) -> Self::Future {
+        // get request headers
         let headers = req.headers();
 
+        // check that Authorization header exists
         let maybe_auth = headers.get("Authorization");
         if maybe_auth.is_none() {
             return future::err(InternalError::new(
@@ -44,6 +39,7 @@ impl FromRequest for Token {
             .left_future();
         }
 
+        // check Authorization header is valid utf-8
         let auth_config = maybe_auth.unwrap().to_str();
         if auth_config.is_err() {
             return future::err(InternalError::new(
@@ -84,29 +80,14 @@ impl FromRequest for Token {
             .left_future();
         }
 
-        // we can fetch managed application data using HttpRequest.app_data::<T>()
-        let db = req.app_data::<Data<MySqlDB>>();
-        if db.is_none() {
+        if (maybe_token_id != std::env::var("BEARER_TOKEN").unwrap().to_string()) {
             return future::err(InternalError::new(
-                "internal error",
-                StatusCode::INTERNAL_SERVER_ERROR,
+                "invalid bearer token",
+                StatusCode::UNAUTHORIZED,
             ))
             .left_future();
         }
 
-        let db = db.unwrap().clone();
-        let token_id = maybe_token_id.unwrap().to_owned();
-
-        async move {
-            db.validate(token_id)
-                .await
-                .map_err(
-                    |_| InternalError::new(
-                            "invalid Bearer token",
-                            StatusCode::UNAUTHORIZED
-                        )
-                    )
-        }
         .boxed_local()
         .right_future()
     }

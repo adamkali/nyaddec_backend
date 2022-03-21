@@ -1,3 +1,7 @@
+use actix_web::Responder;
+use actix_web::http::StatusCode;
+use actix_web::HttpResponse;
+use std::sync::Mutex;
 use crate::common::{
     DetailedResponse::DetailedResponse,
     Freq::generate_guid
@@ -15,7 +19,7 @@ use actix_web::dev::HttpServiceFactory;
 
 #[actix_web::get("/parties")]
 async fn parties(
-    db: Data<PartyRepo>,
+    db: Data<Mutex<PartyRepo>>,
     _t: Token
 ) 
     -> Result<
@@ -25,7 +29,8 @@ async fn parties(
 {
     let mut response: DetailedResponse<Vec<PartyEntity>> = DetailedResponse::new();
     
-    let data = db.all().await;
+    let repo = db.lock().unwrap();
+    let data = repo.all().await;
     match data {
         Ok(value) => {
             response.data = Some(value);
@@ -46,19 +51,17 @@ async fn parties(
 
 #[actix_web::get("/party/{party_id}")]
 async fn party_get(
-    db: Data<PartyRepo>,
+    db: Data<Mutex<PartyRepo>>,
     party_id : Path<String>,
     _t: Token
 ) 
-    -> Result<
-        Json<DetailedResponse<PartyEntity>>,
-        InternalError<StdErr>
-    >
+    -> impl Responder
 {
     let mut response: DetailedResponse<PartyEntity> 
         = DetailedResponse::new();
     
-    let data = db.get(party_id.to_string()).await;
+    let repo = db.lock().unwrap();
+    let data = repo.get(party_id.to_string()).await;
     match data {
         Ok(value) => {
             response.data = Some(value);
@@ -68,18 +71,21 @@ async fn party_get(
                 std::env::var("PARTY_CONTROLLER_PORT").unwrap(),
                 "party/{party_id}",
             );
+        
+        let ok = StatusCode::from_u16(200).unwrap();
+        HttpResponse::with_body(ok,Json(response));
         }
         Err(e) => {
             response.success = false;
             response.message = e.to_string();
         }
     }
-    Ok(Json(response))
+    HttpResponse::Ok();
 }
 
 #[actix_web::post("/party/post")]
 async fn party_post(
-    db: Data<PartyRepo>,
+    db: Data<Mutex<PartyRepo>>,
     create_party: Json<PartyEntity>,
     _t: Token
 )
@@ -94,7 +100,8 @@ async fn party_post(
         party_name: create_party.0.party_name,
         characters: create_party.0.characters,
     };
-    let data = db.post(post_party).await;
+    let repo = db.lock().unwrap();
+    let data = repo.post(post_party).await;
 
     let mut response: DetailedResponse<PartyEntity>
         = DetailedResponse::new();
