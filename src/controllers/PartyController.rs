@@ -1,6 +1,5 @@
-use actix_web::Responder;
-use actix_web::http::StatusCode;
-use actix_web::HttpResponse;
+//use std::sync::Arc;
+use actix_web::http::header::ContentType;
 use std::sync::Mutex;
 use crate::common::{
     DetailedResponse::DetailedResponse,
@@ -12,24 +11,27 @@ use crate::models::{
 };
 use crate::StdErr;
 use crate::repo::PartyRepo::PartyRepo;
+use log::{debug};
 
+
+use actix_web::{HttpRequest, Responder, HttpResponse};
 use actix_web::web::{Data, Json, Path};
 use actix_web::error::InternalError;
 use actix_web::dev::HttpServiceFactory;
 
 #[actix_web::get("/parties")]
 async fn parties(
-    db: Data<Mutex<PartyRepo>>,
+    request: HttpRequest,
     _t: Token
 ) 
-    -> Result<
-        Json<DetailedResponse<Vec<PartyEntity>>>,
-        InternalError<StdErr>,
-    >
+    -> HttpResponse
 {
     let mut response: DetailedResponse<Vec<PartyEntity>> = DetailedResponse::new();
     
-    let repo = db.lock().unwrap();
+    debug!("Fired parties");
+
+    let db = request.app_data::<Data::<Mutex::<PartyRepo>>>().unwrap();
+    let repo = db.lock().unwrap().clone();
     let data = repo.all().await;
     match data {
         Ok(value) => {
@@ -46,21 +48,26 @@ async fn parties(
             response.message = e.to_string();
         }
     }
-    Ok(Json(response))
+    debug!("Response from server: {:?}", Json(&response));
+    return HttpResponse::Ok()
+        .content_type(ContentType::json())
+        .insert_header(("X-Hdr", "sample"))
+        .body(response);
 }
 
 #[actix_web::get("/party/{party_id}")]
 async fn party_get(
-    db: Data<Mutex<PartyRepo>>,
+    request: HttpRequest,
     party_id : Path<String>,
     _t: Token
 ) 
-    -> impl Responder
+    -> Result<impl Responder, InternalError<StdErr>>
 {
     let mut response: DetailedResponse<PartyEntity> 
         = DetailedResponse::new();
     
-    let repo = db.lock().unwrap();
+    let db = request.app_data::<Data::<Mutex::<PartyRepo>>>().unwrap();
+    let repo = db.lock().unwrap().clone();
     let data = repo.get(party_id.to_string()).await;
     match data {
         Ok(value) => {
@@ -71,36 +78,32 @@ async fn party_get(
                 std::env::var("PARTY_CONTROLLER_PORT").unwrap(),
                 "party/{party_id}",
             );
-        
-        let ok = StatusCode::from_u16(200).unwrap();
-        HttpResponse::with_body(ok,Json(response));
         }
         Err(e) => {
             response.success = false;
             response.message = e.to_string();
         }
     }
-    HttpResponse::Ok();
+    return Ok(Json(response));
 }
 
 #[actix_web::post("/party/post")]
 async fn party_post(
-    db: Data<Mutex<PartyRepo>>,
+    request: HttpRequest,
     create_party: Json<PartyEntity>,
     _t: Token
 )
-    -> Result<
-        Json<DetailedResponse<PartyEntity>>,
-        InternalError<StdErr>
-    >
+    -> Result<impl Responder, InternalError<StdErr>>
 {
 
+    
     let post_party = PartyEntity {
         id: generate_guid(),
         party_name: create_party.0.party_name,
         characters: create_party.0.characters,
     };
-    let repo = db.lock().unwrap();
+    let db = request.app_data::<Data::<Mutex::<PartyRepo>>>().unwrap();
+    let repo = db.lock().unwrap().clone();
     let data = repo.post(post_party).await;
 
     let mut response: DetailedResponse<PartyEntity>

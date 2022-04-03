@@ -30,6 +30,17 @@ pub struct PlayerCharacterEntityPost {
     pub fk: String,
 }
 
+impl std::fmt::Debug for PlayerCharacterEntity {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Point")
+            .field("Player ID", &self.id)
+            .field("Player Name", &self.player_name)
+            .field("Player Hitpoints", &self.player_hitpoints)
+            .field("Player level", &self.player_level)
+            .finish()
+    }
+}
+
 /*
 impl <'r, Db: sqlx::Database> Decode<'_, Db> 
     for Vec<PlayerCharacterEntity>

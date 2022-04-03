@@ -3,7 +3,10 @@ mod controllers;
 mod common;
 mod models;
 mod repo;
+use log::{debug, error, log_enabled, info, Level};
 
+use actix_web::middleware::Logger;
+use std::sync::Arc;
 use std::sync::Mutex;
 use actix_web::web::Data;
 use futures::{executor, future};
@@ -15,6 +18,9 @@ async fn main() -> Result<(), StdErr> {
     // loads env variables from .env
     dotenv::dotenv().ok();
 
+
+    std::env::set_var("RUST_LOG", "actix_web=trace");
+    logger::init()?;
 
     actix_web::HttpServer::new(move || {
         let cors = actix_cors::Cors::default()
@@ -33,10 +39,11 @@ async fn main() -> Result<(), StdErr> {
             .max_age(3600);
 
         // logger::init();
-
+        
         let party_repo = Data::new(Mutex::new(repo::PartyRepo::PartyRepo::connect()));
         actix_web::App::new()
-            .app_data(Data::clone(&party_repo))    
+            .app_data(Data::clone(&party_repo))
+            .wrap(Logger::default())
             .wrap(cors)
             .service(controllers::PartyController::party_api())
         })

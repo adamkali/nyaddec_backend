@@ -5,7 +5,7 @@ use log::{debug, warn, error, info, trace};
 pub fn init() -> Result<(), fern::InitError> {
     // pull log level from env
     let log_level = env::var("LOG_LEVEL")
-        .unwrap_or("INFO".into());
+        .unwrap_or("DEBUG".into());
     let log_level = log_level
         .parse::<log::LevelFilter>()
         .unwrap_or(log::LevelFilter::Info);

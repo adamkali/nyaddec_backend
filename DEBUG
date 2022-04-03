@@ -1,0 +1,27 @@
+[2022-03-27T20:03:13][nyaddec_backend::logger][DEBUG] DEBUG output enabled
+[2022-03-27T20:03:13][nyaddec_backend::logger][INFO] INFO output enabled
+[2022-03-27T20:03:13][nyaddec_backend::logger][WARN] WARN output enabled
+[2022-03-27T20:03:13][nyaddec_backend::logger][ERROR] ERROR output enabled
+[2022-03-27T20:03:13][actix_server::builder][INFO] Starting 16 workers
+[2022-03-27T20:03:13][actix_server::server][INFO] Actix runtime found; starting in Actix runtime
+[2022-03-27T20:03:16][actix_web::middleware::logger][DEBUG] Error in response: "internal error"
+[2022-03-27T20:03:16][actix_web::middleware::logger][INFO] 127.0.0.1 "GET /api/parties HTTP/1.1" 500 14 "-" "PostmanRuntime/7.29.0" 0.002082
+[2022-03-27T20:04:51][actix_server::server][INFO] SIGINT received; starting forced shutdown
+[2022-03-27T20:04:51][actix_server::accept][DEBUG] Paused accepting connections on 127.0.0.1:3910
+[2022-03-27T20:04:51][actix_server::worker][INFO] Shutting down idle worker
+[2022-03-27T20:04:51][actix_server::worker][INFO] Shutting down idle worker
+[2022-03-27T20:04:51][actix_server::worker][INFO] Shutting down idle worker
+[2022-03-27T20:04:51][actix_server::worker][INFO] Shutting down idle worker
+[2022-03-27T20:04:51][actix_server::worker][INFO] Shutting down idle worker
+[2022-03-27T20:04:51][actix_server::worker][INFO] Shutting down idle worker
+[2022-03-27T20:04:51][actix_server::worker][INFO] Shutting down idle worker
+[2022-03-27T20:04:51][actix_server::worker][INFO] Shutting down idle worker
+[2022-03-27T20:04:51][actix_server::worker][INFO] Shutting down idle worker
+[2022-03-27T20:04:51][actix_server::worker][INFO] Shutting down idle worker
+[2022-03-27T20:04:51][actix_server::worker][INFO] Shutting down idle worker
+[2022-03-27T20:04:51][actix_server::worker][INFO] Shutting down idle worker
+[2022-03-27T20:04:51][actix_server::worker][INFO] Shutting down idle worker
+[2022-03-27T20:04:51][actix_server::worker][INFO] Shutting down idle worker
+[2022-03-27T20:04:51][actix_server::worker][INFO] Shutting down idle worker
+[2022-03-27T20:04:51][actix_server::worker][INFO] Shutting down idle worker
+[2022-03-27T20:04:51][actix_server::accept][INFO] Accept thread stopped
